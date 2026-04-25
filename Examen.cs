@@ -1,32 +1,68 @@
-using System.Security.AccessControl;
-using System.Security.Cryptography.X509Certificates;
+using System;
+using System.Collections.Generic;
 
 namespace MiTienda
-{ 
-    public class Cliente
+{
+    // Clase base abstracta
+    public abstract class Comprobante
     {
-        public void IdentificarCliente()
-        {
-           si el cliente es nuevo o recurrente que sea vip o no frecuente, y que sea vip si el cliente compro mas de 1000
-        }
-        public void AplicarDescuento()
-        { 
-            AplicarDescuento si el cliente es vip, aplicar un descuento del 10% en su compra total.Si el cliente no es frecuente, no aplicar ningún descuento.  
+        public string Numero { get; set; }
+        public DateTime Fecha { get; set; }
+        public double Total { get; set; }
 
-        }
-        public void DescuentoAdicional()
+        public Comprobante(string num, double total)
         {
-            
+            Numero = num;
+            Fecha = DateTime.Now;
+            Total = total;
         }
-        public void AgregarTipoDescuento()
+
+        public abstract void ImprimirDetalle();
+    }
+
+    // Clase hija para facturación local
+    public class Factura : Comprobante
+    {
+        public string Nit { get; set; }
+
+        public Factura(string num, double total, string nit) : base(num, total)
         {
-            
+            Nit = nit;
         }
-        public void VerPromocionesDisponibles()
+
+        public override void ImprimirDetalle()
         {
-            
+            Console.WriteLine("\n--- FACTURA REGISTRADA ---");
+            Console.WriteLine($"NIT: {Nit}");
+            Console.WriteLine($"Número: {Numero}");
+            Console.WriteLine($"Fecha: {Fecha.ToShortDateString()}");
+            Console.WriteLine($"Total: Bs. {Total}");
         }
     }
 
- 
+    public class Examen
+    {
+        private List<Comprobante> historial = new List<Comprobante>();
+
+        public void RegistrarVenta(Comprobante c)
+        {
+            historial.Add(c);
+        }
+
+        public void MostrarReporte()
+        {
+            Console.WriteLine("\n=== HISTORIAL DE EXAMEN ===");
+            foreach (var c in historial)
+            {
+                c.ImprimirDetalle();
+            }
+        }
+
+        public static void EjecutarPrueba()
+        {
+            Examen prueba = new Examen();
+            prueba.RegistrarVenta(new Factura("FAC-001", 550.0, "12345678"));
+            prueba.MostrarReporte();
+        }
+    }
 }
