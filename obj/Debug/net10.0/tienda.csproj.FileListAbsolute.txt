@@ -12,3 +12,4 @@ C:\Users\jorge\OneDrive\Escritorio\tienda\obj\Debug\net10.0\refint\tienda.dll
 C:\Users\jorge\OneDrive\Escritorio\tienda\obj\Debug\net10.0\tienda.pdb
 C:\Users\jorge\OneDrive\Escritorio\tienda\obj\Debug\net10.0\tienda.genruntimeconfig.cache
 C:\Users\jorge\OneDrive\Escritorio\tienda\obj\Debug\net10.0\ref\tienda.dll
+C:\Users\jorge\OneDrive\Escritorio\tienda\obj\Debug\net10.0\tienda.sourcelink.json

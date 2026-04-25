@@ -1,29 +1,28 @@
+using System;
+using System.Collections.Generic;
+
 namespace MiTienda
 {
     public class Carrito
     {
-        private Producto[] productos = new Producto[100];
-        private int cantidad = 0;
+        private List<Producto> listaCompra = new List<Producto>();
 
-        public void agregaralcarrito(Producto prod)
+        public void RealizarCompra(Producto p)
         {
-            if (cantidad < 100)
-            {
-                productos[cantidad] = prod;
-                cantidad++;
-            }
+            listaCompra.Add(p);
+            Console.WriteLine($"Agregado al carrito: {p.getnombre()}");
         }
 
-        public double mostrartotal()
+        public void MostrarResumen()
         {
-            double suma = 0;
-            for (int i = 0; i < cantidad; i++)
+            double total = 0;
+            Console.WriteLine("\n--- RESUMEN FINAL DE COMPRA ---");
+            foreach (var p in listaCompra)
             {
-                suma += productos[i].getprecio();
+                Console.WriteLine($"- {p.getnombre()}: Bs. {p.getprecio()}");
+                total += p.getprecio();
             }
-            return suma;
+            Console.WriteLine($"TOTAL A PAGAR: Bs. {total}");
         }
-
-        public int cantidaddeproductos() => cantidad;
     }
 }
