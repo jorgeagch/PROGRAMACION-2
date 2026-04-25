@@ -1,0 +1,14 @@
+C:\Users\jorge\OneDrive\Escritorio\tienda\bin\Debug\net10.0\tienda.exe
+C:\Users\jorge\OneDrive\Escritorio\tienda\bin\Debug\net10.0\tienda.deps.json
+C:\Users\jorge\OneDrive\Escritorio\tienda\bin\Debug\net10.0\tienda.runtimeconfig.json
+C:\Users\jorge\OneDrive\Escritorio\tienda\bin\Debug\net10.0\tienda.dll
+C:\Users\jorge\OneDrive\Escritorio\tienda\bin\Debug\net10.0\tienda.pdb
+C:\Users\jorge\OneDrive\Escritorio\tienda\obj\Debug\net10.0\tienda.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jorge\OneDrive\Escritorio\tienda\obj\Debug\net10.0\tienda.AssemblyInfoInputs.cache
+C:\Users\jorge\OneDrive\Escritorio\tienda\obj\Debug\net10.0\tienda.AssemblyInfo.cs
+C:\Users\jorge\OneDrive\Escritorio\tienda\obj\Debug\net10.0\tienda.csproj.CoreCompileInputs.cache
+C:\Users\jorge\OneDrive\Escritorio\tienda\obj\Debug\net10.0\tienda.dll
+C:\Users\jorge\OneDrive\Escritorio\tienda\obj\Debug\net10.0\refint\tienda.dll
+C:\Users\jorge\OneDrive\Escritorio\tienda\obj\Debug\net10.0\tienda.pdb
+C:\Users\jorge\OneDrive\Escritorio\tienda\obj\Debug\net10.0\tienda.genruntimeconfig.cache
+C:\Users\jorge\OneDrive\Escritorio\tienda\obj\Debug\net10.0\ref\tienda.dll
