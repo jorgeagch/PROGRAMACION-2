@@ -1,82 +1,86 @@
 ﻿using System;
-using System.Collections.Generic;
 using MiTienda;
 
-class Program
+namespace MiTienda
 {
-    static void Main()
+    class Program
     {
-        Presentacion gui = new Presentacion();
-        Inventario inv = new Inventario();
-        Carrito car = new Carrito();
-        GestionUsuarios gus = new GestionUsuarios();
-
-        List<Usuario> usuarios = new List<Usuario> {
-            new Usuario("jorge", "123", "Admin"),
-            new Usuario("user", "456", "Cliente")
-        };
-
-        bool appCorriendo = true;
-        while (appCorriendo)
+        static void Main()
         {
-            Console.Clear();
-            Console.WriteLine("=== LOGIN TIENDA CONSOLA ===");
-            Console.Write("Usuario: "); string uIn = Console.ReadLine() ?? "";
-            Console.Write("Pass: "); string pIn = Console.ReadLine() ?? "";
+            Inventario inv = new Inventario();
+            // Productos iniciales para probar
+            inv.AgregarProducto(new Producto("P1", "Monitor", 1200));
+            inv.AgregarProducto(new Producto("P2", "Mouse", 100));
 
-            Usuario? user = usuarios.Find(x => x.Nombre == uIn && x.Password == pIn);
+            bool tiendaAbierta = true;
 
-            if (user != null)
+            while (tiendaAbierta)
             {
-                bool sesionActiva = true;
-                while (sesionActiva)
-                {
-                    Console.Clear();
-                    if (user.Rol == "Admin") {
-                        gui.MostrarMenuAdmin();
-                        string op = Console.ReadLine() ?? "";
-                        switch (op) {
-                            case "1": inv.ListarProductos(); break;
-                            case "2": 
-                                Console.Write("Nombre: "); string n = Console.ReadLine() ?? "";
-                                Console.Write("Precio: "); double.TryParse(Console.ReadLine(), out double p);
-                                inv.AgregarProducto(new Producto("0", n, p)); break;
-                            case "3":
-                                inv.ListarProductos();
-                                Console.Write("Nro a actualizar: "); int.TryParse(Console.ReadLine(), out int iU);
-                                Console.Write("Nuevo nombre: "); string nn = Console.ReadLine() ?? "";
-                                Console.Write("Nuevo precio: "); double.TryParse(Console.ReadLine(), out double np);
-                                inv.ActualizarProducto(iU-1, nn, np); break;
-                            case "4":
-                                inv.ListarProductos();
-                                Console.Write("Nro a eliminar: "); int.TryParse(Console.ReadLine(), out int iE);
-                                inv.EliminarProducto(iE-1); break;
-                            case "5": gus.ListarUsuarios(usuarios); break;
-                            case "6": gus.AgregarUsuario(usuarios); break;
-                            case "7": gus.ActualizarUsuario(usuarios); break;
-                            case "8": gus.EliminarUsuario(usuarios); break;
-                            case "9": sesionActiva = false; break; // Cerrar sesión
-                            case "10": sesionActiva = false; appCorriendo = false; break; // Cerrar Tienda
-                        }
-                    } else {
-                        gui.MostrarMenuCliente();
-                        string op = Console.ReadLine() ?? "";
-                        switch (op) {
-                            case "1": inv.ListarProductos(); break;
-                            case "2":
-                                inv.ListarProductos();
-                                Console.Write("Nro producto para comprar: "); int.TryParse(Console.ReadLine(), out int sel);
-                                Producto? prod = inv.ObtenerProducto(sel-1);
-                                if (prod != null) car.RealizarCompra(prod); break;
-                            case "3": car.MostrarResumen(); sesionActiva = false; break; // Cerrar sesión
-                            case "4": sesionActiva = false; appCorriendo = false; break; // Cerrar Tienda
-                        }
-                    }
-                    if (sesionActiva) { Console.WriteLine("\nPresione una tecla..."); Console.ReadKey(); }
+                Console.Clear();
+                Console.WriteLine("=== LOGIN TIENDA ===");
+                Console.Write("Usuario: "); string u = Console.ReadLine() ?? string.Empty;
+                Console.Write("Password: "); string p = Console.ReadLine() ?? string.Empty;
+
+                if (u == "admin" && p == "123") {
+                    MenuAdmin(inv, ref tiendaAbierta);
+                }
+                else if (u == "cliente" && p == "456") {
+                    MenuCliente(inv, ref tiendaAbierta);
+                }
+                else {
+                    Console.WriteLine("Credenciales inválidas. Enter para reintentar...");
+                    Console.ReadLine();
                 }
             }
-            else {
-                Console.WriteLine("Error. Presione una tecla..."); Console.ReadKey();
+        }
+
+        static void MenuAdmin(Inventario inv, ref bool abierta)
+        {
+            bool sesion = true;
+            while (sesion) {
+                Console.WriteLine("\n--- ADMIN --- \n1. Listar\n9. Cerrar Sesion\n10. Cerrar Tienda");
+                string op = Console.ReadLine() ?? string.Empty;
+                if (op == "1") inv.ListarProductos();
+                else if (op == "9") sesion = false;
+                else if (op == "10") { sesion = false; abierta = false; }
+            }
+        }
+
+        static void MenuCliente(Inventario inv, ref bool abierta)
+        {
+            Carrito car = new Carrito();
+            Cliente c = new Cliente("Jorge", 1200); // Ejemplo VIP
+            bool sesion = true;
+
+            while (sesion) {
+                Console.WriteLine("\n--- CLIENTE --- \n1. Ver Productos\n2. Comprar\n3. Finalizar/Cerrar Sesion\n4. Salir");
+                string op = Console.ReadLine() ?? string.Empty;
+                if (op == "1") inv.ListarProductos();
+                else if (op == "2") {
+                    inv.ListarProductos();
+                    Console.Write("Elija el número: ");
+                    string? entrada = Console.ReadLine();
+                    if (int.TryParse(entrada, out int idx)) {
+                        idx -= 1;
+                        Producto? prod = inv.ObtenerProducto(idx);
+                        if (prod != null) {
+                            car.agregaralcarrito(prod);
+                            Console.WriteLine("Agregado.");
+                        } else {
+                            Console.WriteLine("Producto inválido.");
+                        }
+                    } else {
+                        Console.WriteLine("Entrada inválida.");
+                    }
+                }
+                else if (op == "3") {
+                    double total = c.AplicarDescuento(car.mostrartotal());
+                    Console.WriteLine($"Total final: Bs. {total}");
+                    Console.WriteLine("Sesión cerrada. Presione Enter...");
+                    Console.ReadLine();
+                    sesion = false;
+                }
+                else if (op == "4") { sesion = false; abierta = false; }
             }
         }
     }
