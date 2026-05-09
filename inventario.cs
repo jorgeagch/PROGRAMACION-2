@@ -4,26 +4,28 @@ namespace MiTienda
 {
     public class Inventario
     {
-        private Producto[] productos = new Producto[100];
+        private Producto?[] productos = new Producto?[100];
         private int contador = 0;
 
         public void AgregarProducto(Producto p)
         {
-            if (contador < 100) {
-                productos[contador++] = p;
-            }
+            if (contador < 100) productos[contador++] = p;
         }
 
         public void ListarProductos()
         {
-            Console.WriteLine("\n--- PRODUCTOS DISPONIBLES ---");
+            Console.WriteLine("\n--- CATÁLOGO DE PRODUCTOS ---");
             for (int i = 0; i < contador; i++)
             {
-                Console.WriteLine($"{i + 1}. {productos[i].Nombre} - Bs. {productos[i].Precio}");
+                Console.Write($"{i + 1}. ");
+                productos[i]?.MostrarDetalle();
             }
         }
 
-        public int stockdeproductos() => contador;
-        public Producto? ObtenerProducto(int index) => (index >= 0 && index < contador) ? productos[index] : null;
+        public Producto? ObtenerProducto(int indice)
+        {
+            if (indice >= 0 && indice < contador) return productos[indice];
+            return null;
+        }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace MiTienda
 {
-    // Clase base abstracta
     public abstract class Comprobante
     {
         public string Numero { get; set; }
@@ -20,7 +19,6 @@ namespace MiTienda
         public abstract void ImprimirDetalle();
     }
 
-    // Clase hija para facturación local
     public class Factura : Comprobante
     {
         public string Nit { get; set; }
@@ -32,37 +30,18 @@ namespace MiTienda
 
         public override void ImprimirDetalle()
         {
-            Console.WriteLine("\n--- FACTURA REGISTRADA ---");
-            Console.WriteLine($"NIT: {Nit}");
-            Console.WriteLine($"Número: {Numero}");
-            Console.WriteLine($"Fecha: {Fecha.ToShortDateString()}");
-            Console.WriteLine($"Total: Bs. {Total}");
+            Console.WriteLine($"\n--- FACTURA: {Numero} ---");
+            Console.WriteLine($"NIT: {Nit} | Total: Bs. {Total}");
         }
     }
 
     public class Examen
     {
-        private List<Comprobante> historial = new List<Comprobante>();
-
-        public void RegistrarVenta(Comprobante c)
-        {
-            historial.Add(c);
-        }
-
-        public void MostrarReporte()
-        {
-            Console.WriteLine("\n=== HISTORIAL DE EXAMEN ===");
-            foreach (var c in historial)
-            {
-                c.ImprimirDetalle();
-            }
-        }
-
         public static void EjecutarPrueba()
         {
-            Examen prueba = new Examen();
-            prueba.RegistrarVenta(new Factura("FAC-001", 550.0, "12345678"));
-            prueba.MostrarReporte();
+            Console.WriteLine("=== INICIANDO PRUEBA DE EXAMEN ===");
+            Factura f = new Factura("F-001", 550.0, "1234567");
+            f.ImprimirDetalle();
         }
     }
 }

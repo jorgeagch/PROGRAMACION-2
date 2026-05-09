@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using MiTienda;
 
 namespace MiTienda
@@ -7,70 +8,135 @@ namespace MiTienda
     {
         static void Main()
         {
-            Examen.EjecutarPrueba();
-            Console.WriteLine("\nPresione Enter para ir a la tienda...");
-            Console.ReadLine();
-
             Inventario inv = new Inventario();
-            inv.AgregarProducto(new Producto("P1", "Monitor", 1200));
-            inv.AgregarProducto(new Producto("P2", "Mouse", 100));
+            Presentacion gui = new Presentacion();
+            
+            inv.AgregarProducto(new ProductoFisico("Monitor 24'", 1200, 5));
+            inv.AgregarProducto(new ProductoDigital("Licencia Windows 11", 150, "W269N-WFGWX-YVC9B"));
+            inv.AgregarProducto(new ProductoFisico("Mouse Gamer", 80, 0)); // Sin stock para probar validación
+            inv.AgregarProducto(new ProductoDigital("Suscripción GamePass", 70, "GP-998-XYZ"));
+
+            List<Usuario> usuarios = new List<Usuario> {
+                new Usuario("admin", "123", "Admin"),
+                new Usuario("cliente", "456", "Cliente")
+            };
 
             bool tiendaAbierta = true;
 
             while (tiendaAbierta)
             {
                 Console.Clear();
-                Console.WriteLine("=== LOGIN TIENDA ===");
-                Console.Write("Usuario: "); string u = Console.ReadLine() ?? "";
-                Console.Write("Password: "); string p = Console.ReadLine() ?? "";
+                Console.WriteLine("======================================");
+                Console.WriteLine("      SISTEMA DE TIENDA CONSOLA       ");
+                Console.WriteLine("======================================");
+                
+                Examen.EjecutarPrueba();
+                Console.WriteLine("--------------------------------------");
 
-                if (u == "admin" && p == "123") MenuAdmin(inv, ref tiendaAbierta);
-                else if (u == "cliente" && p == "456") MenuCliente(inv, ref tiendaAbierta);
-                else {
-                    Console.WriteLine("Credenciales inválidas.");
+                Console.Write("Usuario: "); string uInput = Console.ReadLine() ?? "";
+                Console.Write("Password: "); string pInput = Console.ReadLine() ?? "";
+
+                Usuario? user = usuarios.Find(x => x.Nombre == uInput && x.Password == pInput);
+
+                if (user != null)
+                {
+                    if (user.Rol == "Admin")
+                        MenuAdmin(inv, gui, ref tiendaAbierta);
+                    else
+                        MenuCliente(inv, gui, ref tiendaAbierta);
+                }
+                else
+                {
+                    Console.WriteLine("\nCredenciales inválidas. Enter para reintentar...");
                     Console.ReadLine();
                 }
             }
         }
 
-        static void MenuAdmin(Inventario inv, ref bool abierta)
+        static void MenuAdmin(Inventario inv, Presentacion gui, ref bool abierta)
         {
             bool sesion = true;
-            while (sesion) {
-                Console.WriteLine("\n--- ADMIN --- \n1. Listar\n9. Cerrar Sesion\n10. Salir");
+            while (sesion)
+            {
+                Console.Clear();
+                gui.MostrarMenuAdmin();
                 string op = Console.ReadLine() ?? "";
-                if (op == "1") inv.ListarProductos();
-                else if (op == "9") sesion = false;
-                else if (op == "10") { sesion = false; abierta = false; }
+
+                switch (op)
+                {
+                    case "1":
+                        inv.ListarProductos();
+                        Console.WriteLine("\nPresione Enter para continuar...");
+                        Console.ReadLine();
+                        break;
+                    case "9":
+                        sesion = false;
+                        break;
+                    case "10":
+                        sesion = false;
+                        abierta = false;
+                        break;
+                }
             }
         }
 
-        static void MenuCliente(Inventario inv, ref bool abierta)
+        static void MenuCliente(Inventario inv, Presentacion gui, ref bool abierta)
         {
             Carrito car = new Carrito();
-            Cliente c = new Cliente("Jorge", 1200, true); 
+            Cliente clienteActivo = new Cliente("Jorge", 1200, true);
             bool sesion = true;
 
-            while (sesion) {
-                Console.WriteLine("\n--- CLIENTE --- \n1. Ver Productos\n2. Comprar\n3. Finalizar\n4. Salir");
+            while (sesion)
+            {
+                Console.Clear();
+                Console.WriteLine($"BIENVENIDO, {clienteActivo.Nombre.ToUpper()}");
+                gui.MostrarMenuCliente();
                 string op = Console.ReadLine() ?? "";
-                if (op == "1") inv.ListarProductos();
-                else if (op == "2") {
+
+                if (op == "1")
+                {
                     inv.ListarProductos();
-                    Console.Write("Elija el número: ");
-                    if (int.TryParse(Console.ReadLine(), out int idx)) {
+                    Console.WriteLine("\nPresione Enter para volver...");
+                    Console.ReadLine();
+                }
+                else if (op == "2")
+                {
+                    inv.ListarProductos();
+                    Console.Write("\nSeleccione el número del producto para agregar al carrito: ");
+                    if (int.TryParse(Console.ReadLine(), out int idx))
+                    {
                         Producto? prod = inv.ObtenerProducto(idx - 1);
-                        if (prod != null) car.RealizarCompra(prod);
+                        if (prod != null)
+                        {
+                            car.Agregar(prod);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Producto no encontrado.");
+                        }
+                    }
+                    Console.ReadLine();
+                }
+                else if (op == "3")
+                {
+                    bool comprado = car.MostrarResumenYConfirmar(clienteActivo);
+                    if (comprado)
+                    {
+                        Console.WriteLine("\nCerrando sesión por seguridad tras la compra...");
+                        Console.ReadLine();
+                        sesion = false;
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nPresione Enter para seguir navegando...");
+                        Console.ReadLine();
                     }
                 }
-                else if (op == "3") {
-                    car.MostrarResumen();
-                    double totalFinal = c.AplicarDescuento(car.ObtenerTotalAcumulado());
-                    Console.WriteLine($"TOTAL FINAL: Bs. {totalFinal}");
-                    Console.ReadLine();
+                else if (op == "4")
+                {
                     sesion = false;
+                    abierta = false;
                 }
-                else if (op == "4") { sesion = false; abierta = false; }
             }
         }
     }
