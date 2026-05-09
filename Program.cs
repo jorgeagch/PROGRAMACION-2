@@ -13,7 +13,7 @@ namespace MiTienda
             
             inv.AgregarProducto(new ProductoFisico("Monitor 24'", 1200, 5));
             inv.AgregarProducto(new ProductoDigital("Licencia Windows 11", 150, "W269N-WFGWX-YVC9B"));
-            inv.AgregarProducto(new ProductoFisico("Mouse Gamer", 80, 0)); // Sin stock para probar validación
+            inv.AgregarProducto(new ProductoFisico("Mouse Gamer", 80, 0)); 
             inv.AgregarProducto(new ProductoDigital("Suscripción GamePass", 70, "GP-998-XYZ"));
 
             List<Usuario> usuarios = new List<Usuario> {
@@ -66,7 +66,7 @@ namespace MiTienda
                 {
                     case "1":
                         inv.ListarProductos();
-                        Console.WriteLine("\nPresione Enter para continuar...");
+                        Console.WriteLine("\nPresione Enter para continuar");
                         Console.ReadLine();
                         break;
                     case "9":
@@ -96,7 +96,7 @@ namespace MiTienda
                 if (op == "1")
                 {
                     inv.ListarProductos();
-                    Console.WriteLine("\nPresione Enter para volver...");
+                    Console.WriteLine("\nPresione Enter para volver");
                     Console.ReadLine();
                 }
                 else if (op == "2")
@@ -112,7 +112,7 @@ namespace MiTienda
                         }
                         else
                         {
-                            Console.WriteLine("Producto no encontrado.");
+                            Console.WriteLine("Producto no encontrado");
                         }
                     }
                     Console.ReadLine();
@@ -122,13 +122,13 @@ namespace MiTienda
                     bool comprado = car.MostrarResumenYConfirmar(clienteActivo);
                     if (comprado)
                     {
-                        Console.WriteLine("\nCerrando sesión por seguridad tras la compra...");
+                        Console.WriteLine("\nCerrando sesión por seguridad tras la compra");
                         Console.ReadLine();
                         sesion = false;
                     }
                     else
                     {
-                        Console.WriteLine("\nPresione Enter para seguir navegando...");
+                        Console.WriteLine("\nPresione Enter para seguir navegando");
                         Console.ReadLine();
                     }
                 }

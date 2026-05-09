@@ -13,7 +13,6 @@ namespace MiTienda
             Precio = precio;
         }
 
-        // Método abstracto: cada hijo decide cómo mostrarse
         public abstract void MostrarDetalle();
         
         public abstract bool ValidarDisponibilidad();
